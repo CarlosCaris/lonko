@@ -15,7 +15,11 @@ st.write("""
 
 # LONKO
 
-Software/herramienta digital para la simulación, modelación y optimización del proceso de obtención del ingrediente funcional nootrópico a partir de materias primas previamente identificadas y caracterizadas, incorporando las etapas fundamentales del proceso (i.e. extracción, purificación, encapsulación) y cuantificando el efecto de los parámetros operacionales sobre la pureza, rendimiento y productividad final. Para este desafío, el objetivo estará centrado en desarrollar el prototipo mínimo viable de dicho software , considerando como base distintos procesos y equipamientos existentes, ya probados y estudiados para productos polifenólicos (tanto a escala experimental como piloto e industrial). El software incluirá distintas funcionalidades: análisis y selección de operaciones unitarias y su pertinencia para cada etapa procesamiento, con un foco en tecnologías verdes; modelación de fenómenos termodinámicos y químicos involucrados; y simulación y optimización para la correcta operación de la cadena productiva y la reducción de incertidumbre y costos asociados a las tradicionales pruebas de ensayo y error. Las funcionalidades estarán basadas en herramientas y algoritmos de búsqueda inteligente y simulación dinámica, las que permiten predecir la salida de un proceso para cada configuración que se desee, evitando aquellas dificultades asociadas a la arista económica del diseño de procesos. La simulación, acoplada a la valoración objetiva de términos como productividad, pureza y rendimiento, posibilitan la optimización de los parámetros de operación del proceso, la cual puede ser orientada de acuerdo a las diversas restricciones inherentes del proceso (e.g. condiciones iniciales de la materia prima, calidad mínima garantizada, etc.).
+Herramienta digital basada en modelos machine learning y fundamentos termodinámicos para :
+1. Predecir características del residuo agroindustrial a usar como materia prima
+2. Definir proceso óptimo para la producción de ingredientes funcionales a partir del residuo agroindustrial.
+
+Funciona como un recomendador inteligente para la selección de residuos agroindustriales adecuados y la la definición de procesos costo-eficientes que apoyen la toma de decisiones.
 
 """)
 
@@ -40,7 +44,7 @@ def user_input_features():
     # Proceso de secado
     masa = st.sidebar.slider('Masa(kg)',0,1000,500) # Masa en kilogramos
     # Hmedad inicial - Predicho
-    T_sec = st.sidebar.slider('Temperatura de secado(K°)',60,85,75) # valles disponebles para utilizar
+    T_sec = st.sidebar.slider('Temperatura de secado(C°)',60,85,75) # valles disponebles para utilizar
     #PTOS polifenoles totales de orujo seco (%) - Predicho
     # PPFS porcentaje peso PT en semillas (%) - Predicho
     # Proceso de extraccion
@@ -150,28 +154,28 @@ eficiencia  = df_retenciones[0:1:].to_numpy()*df_retenciones[2:3:].to_numpy()*10
 # Caracteristicas del producto
 caracteristicas_producto = df_predicciones[['taninos','flavanoles','acidos fenolicos']]
 
-st.subheader('Caracteristicas del producto')
+st.subheader('Perfil polifenólico del ingrediente MULLO (mg/mg polifenoles totales)')
 st.bar_chart(caracteristicas_producto.T)
 
-st.subheader('Rendimiento de la extracción')
+st.subheader('Rendimiento de producción de MULLO(mg polifenoles totales/kg de orujo)')
 st.write(rendimiento_extraccion)
 
-st.subheader('Productividad del proceso')
+st.subheader('Capacidad de procesamiento (kg orujo húmedo/min)')
 st.write(productividad)
 
-st.subheader('Eficiencia del proceso')
+st.subheader('Eficiencia de recuperación de polifenoles totales (%)')
 st.write(eficiencia)
 
 # Caracteristicas del producto
 caracteristicas_producto = df_predicciones[['taninos','flavanoles','acidos fenolicos']]
-st.subheader('Predicción condiciones iniciales y perfil del producto')
-st.write(df_predicciones)
-
-st.subheader('Caracteristicas del proceso')
-st.write(input_df)
-
-st.subheader('Resultado proceso global')
-st.write(df_retenciones)
+st.subheader('Caracterización de materia prima orujo húmedo (%)')
+st.write(df_predicciones[['Cantidad_semillas','Cantidad_hollejo','Humedad_orujo']]*100)
+# Polifenoles totales del orujo seco
+st.subheader('Polifenoles totales del orujo seco (%)')
+st.write(df_predicciones[['Polifenoles_totales']]*100)
+# Perfil polifenólico del orujo seco (%)
+st.subheader('Perfil polifenólico del orujo seco (mg/mg polifenoles totales)')
+st.write(df_predicciones[['taninos','flavanoles','acidos fenolicos']])
 
 st.subheader('Input ingrados por el usuario')
 
