@@ -35,7 +35,7 @@ uploaded_file = st.sidebar.file_uploader("Subir archivo con datos de campo y pro
 if uploaded_file is not None:
     input_df_prediccion = pd.read_csv(uploaded_file)
 else:
-    input_df_prediccion = pd.read_csv('data_hackathon_sample.csv',sep=";")
+    input_df_prediccion = pd.read_csv('data_hackathon_sample.csv')
     input_df_prediccion = input_df_prediccion.drop(['cantidad_semillas','cantidad_hollejo','humedad_orujo','polifenoles_totales','taninos','flavanoles','acidos_fenolicos'], axis=1)
     input_df_prediccion = input_df_prediccion.set_index('sample_id')
 
