@@ -20,9 +20,10 @@ Software/herramienta digital para la simulación, modelación y optimización de
 """)
 
 st.sidebar.header('Ingreso del input por el usuario')
+st.sidebar.write("""Ingreso de datos para predecir condiciones iniciales del proceso """)
 
 st.sidebar.markdown("""
-[Example CSV input file]('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/data_hackathon_sample.csv')
+[Archivo CSV de ejemplo](https://github.com/CarlosCaris/lonko/blob/main/data_hackathon_sample.csv)
 """)
 ## Para ingresar los datos al la plataforma
 # Esta función permite subir un archivo o permite que el usuario las agregue datos manualmente
@@ -30,10 +31,11 @@ uploaded_file = st.sidebar.file_uploader("Subir archivo con datos de campo y pro
 if uploaded_file is not None:
     input_df_prediccion = pd.read_csv(uploaded_file)
 else:
-    input_df_prediccion = pd.read_csv('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/data_hackathon_sample.csv',sep=";")
+    input_df_prediccion = pd.read_csv('data_hackathon_sample.csv',sep=";")
     input_df_prediccion = input_df_prediccion.drop(['cantidad_semillas','cantidad_hollejo','humedad_orujo','polifenoles_totales','taninos','flavanoles','acidos_fenolicos'], axis=1)
     input_df_prediccion = input_df_prediccion.set_index('sample_id')
 
+st.sidebar.write("""Utilice los sliders para modificar las condiciones del proceso""")
 def user_input_features():
     # Proceso de secado
     masa = st.sidebar.slider('Masa(kg)',0,1000,500) # Masa en kilogramos
@@ -45,7 +47,7 @@ def user_input_features():
     te = st.sidebar.slider('Tiempo de extracción(min)', 10,240,120)
     temp_e = st.sidebar.slider('Temperatura de extracción(C°)', 40,100,75)
     ID_sol = st.sidebar.slider('Tipo de solvente utilizado\n [1]Etanol-Agua pH 2.0, 50% w/w [2]Etanol-Agua 50% w/w',1,2,1)
-    ID_procesos = st.sidebar.slider('Tipo de solvente utilizado\n Pressurized Liquid Extracion (PLE)',0,1,1)
+    #ID_procesos = st.sidebar.slider('Tipo de solvente utilizado\n Pressurized Liquid Extracion (PLE)',0,1,1)
     # PP_Tan Porcentaje de los polifenoles totales asociados a taninos (%) - Predicho
     # PP_AF  : Porcentaje de los polifenoles totales asociados a acidos-fenolicos (%) - Predicho
     # PP_FLA : Porcentaje de los polifenoles totales asociados a flavanoides (%) - Predicho
@@ -55,14 +57,14 @@ def user_input_features():
             'te': te,
             'temp_e': temp_e,
             'ID_sol': ID_sol,
-            'ID_procesos':ID_procesos}
+            'ID_procesos':1}
     features = pd.DataFrame(data, index=[0])
     return features
 input_df = user_input_features()
 
 # Una vez que se tiene la data leida, se importa la data original, con la que se entrenó el modelo
 # esta data solo se usa para la codificación
-hackathon_raw = pd.read_csv('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/data_hackathon_v4.csv', sep=";")
+hackathon_raw = pd.read_csv('data_hackathon_v4.csv', sep=";")
 # elimino la columna target
 hackathon_raw = hackathon_raw.drop(['cantidad_semillas','cantidad_hollejo','humedad_orujo','polifenoles_totales','taninos','flavanoles','acidos_fenolicos'], axis=1)
 hackathon_raw = hackathon_raw.set_index('sample_id')
@@ -77,30 +79,21 @@ for col in encode:
 df = df[:1] # Recupero solo la primera linea, esta contiene la nueva instancia
 
 ## Ya no se están agregando cosas a la barra lateral
-
-st.subheader('Input ingrados por el usuario')
-
-if uploaded_file is not None:
-    st.write(df)
-else:
-    st.write('Esperando archivo .CSV subido. Actualmente se ven los datos ingresados por el usuario')
-    st.write(df)
-
 ## Ahora vienen las predicciones, vamos a cargar los modelos entrenados
 # Modelo cantidad de semillas
-load_cantidad_semillas = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_semillas.pkl','rb'))
+load_cantidad_semillas = pickle.load(open('model_semillas.pkl','rb'))
 # Modelo cantidad cantidad_hollejo
-load_cantidad_hollejo = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_hollejo.pkl','rb'))
+load_cantidad_hollejo = pickle.load(open('model_hollejo.pkl','rb'))
 # Modelo humedad horujo
-load_humedad_horujo = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_humedad_orujo.pkl','rb'))
+load_humedad_horujo = pickle.load(open('model_humedad_orujo.pkl','rb'))
 # Modelo polifenoles totales
-load_polifenoles_totales = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_polifenoles_totales.pkl','rb'))
+load_polifenoles_totales = pickle.load(open('model_polifenoles_totales.pkl','rb'))
 # Modelo taninos
-load_taninos = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_taninos.pkl','rb'))
+load_taninos = pickle.load(open('model_taninos.pkl','rb'))
 # Modelo flavanoles
-load_flavanoles = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_flavanoles.pkl','rb'))
+load_flavanoles = pickle.load(open('model_flavanoles.pkl','rb'))
 # Modelo acidos acidos_fenolicos
-load_acidos_fenolicos = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_acidos_fenolicos.pkl','rb'))
+load_acidos_fenolicos = pickle.load(open('model_acidos_fenolicos.pkl','rb'))
 
 ## Aplicamos el modelo para hacer predicciones
 # Predicción de cantidad de semillas
@@ -157,16 +150,33 @@ eficiencia  = df_retenciones[0:1:].to_numpy()*df_retenciones[2:3:].to_numpy()*10
 # Caracteristicas del producto
 caracteristicas_producto = df_predicciones[['taninos','flavanoles','acidos fenolicos']]
 
+st.subheader('Caracteristicas del producto')
+st.bar_chart(caracteristicas_producto.T)
 
-st.subheader('Predicción')
+st.subheader('Rendimiento de la extracción')
+st.write(rendimiento_extraccion)
+
+st.subheader('Productividad del proceso')
+st.write(productividad)
+
+st.subheader('Eficiencia del proceso')
+st.write(eficiencia)
+
+# Caracteristicas del producto
+caracteristicas_producto = df_predicciones[['taninos','flavanoles','acidos fenolicos']]
+st.subheader('Predicción condiciones iniciales y perfil del producto')
 st.write(df_predicciones)
 
-st.subheader('Input Usuario')
+st.subheader('Caracteristicas del proceso')
 st.write(input_df)
 
 st.subheader('Resultado proceso global')
 st.write(df_retenciones)
 
-st.subheader('Plot')
-st.bar_chart(caracteristicas_producto.T)
+st.subheader('Input ingrados por el usuario')
 
+if uploaded_file is not None:
+    st.write(df)
+else:
+    st.write('Esperando archivo .CSV subido. Actualmente se ven los datos ingresados por el usuario')
+    st.write(df)
