@@ -7,6 +7,8 @@ Funciona como un recomendador inteligente para la selección de residuos agroind
 
 # Instrucciones para correr la aplicación
 
+Se requiere la instalación una instalación de Python 3.6 o mayor
+
 1.- Instalar las depencias incluidas en el archivo Requiriments.txt 
 
 ### pip3 install -r requirements.txt
