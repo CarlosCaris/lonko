@@ -22,7 +22,7 @@ Software/herramienta digital para la simulación, modelación y optimización de
 st.sidebar.header('Ingreso del input por el usuario')
 
 st.sidebar.markdown("""
-[Example CSV input file](https://raw.githubusercontent.com/dataprofessor/data/master/penguins_example.csv)
+[Example CSV input file](https://raw.githubusercontent.com/CarlosCaris/lonko/blob/main/data_hackathon_sample.csv)
 """)
 ## Para ingresar los datos al la plataforma
 # Esta función permite subir un archivo o permite que el usuario las agregue datos manualmente
