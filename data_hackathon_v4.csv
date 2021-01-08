@@ -1,0 +1,11 @@
+sample_id;variedad;valle;sistema_conduccion;rendimiento;riego;DGA;plantacion;cosecha;nitrogeno;maceracion;temperatura_maceracion;cantidad_semillas;cantidad_hollejo;humedad_orujo;polifenoles_totales;taninos;flavanoles;acidos_fenolicos
+sample_1;Cabernet Sauvignon;Maipo alto;espaldera (1x3);6500;910;1208;1995;43931;20;4;23;0.2;0.25;0.55;0.004;0.4;0.18;0.14
+sample_2;Cabernet Sauvignon;Maule;espaldera (1x3);10000;1213;1707;2000;43941;40;5;24;0.19;0.25;0.56;0.007;0.52;0.07;0.16
+sample_3;Cinsault;Itata;espaldera (1x2);9000;2800;1445;1990;43922;35;6;25;0.18;0.24;0.58;0.009;0.5;0.06;0.142
+sample_4;Merlot;Maule;espaldera (1x2);9000;1420;1645;1993;43905;55;7;26;0.2;0.23;0.57;0.01;0.45;0.12;0.12
+sample_5;Carmenere;Colchagua;espaldera (1x3);12000;1805;1761;2001;43931;25;8;27;0.25;0.15;0.6;0.012;0.46;0.11;0.154
+sample_6;Pinot Noir;Casablanca;espaldera (1x3);10000;820;1258;2005;43891;15;9;28;0.23;0.15;0.62;0.011;0.43;0.13;0.166
+sample_7;Syrah;Cachapoal;espaldera (1x3);12000;955;1325;1998;43910;40;10;29;0.15;0.15;0.7;0.015;0.39;0.19;0.154
+sample_8;Merlot;Maule;Parron (3x3);18000;1100;1621;1997;43905;50;11;30;0.15;0.1;0.75;0.008;0.42;0.16;0.15
+sample_9;Malbec;Maipo  ;espaldera (1x3);7000;1260;1282;1999;43926;32;12;29;0.17;0.15;0.68;0.005;0.44;0.17;0.132
+sample_10;Cabernet Sauvignon;Colchagua;espaldera (1x3);6000;1790;1752;1995;43936;28;20;28;0.22;0.14;0.64;0.006;0.51;0.06;0.164
