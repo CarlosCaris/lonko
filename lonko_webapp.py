@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import pickle
 import datetime
-from sklearn.preprocessing import StandardScaler
 now = datetime.datetime.now()
 
 #----------------------------#
@@ -28,7 +27,7 @@ st.sidebar.markdown("""
 # Esta función permite subir un archivo o permite que el usuario las agregue datos manualmente
 uploaded_file = st.sidebar.file_uploader("Subir archivo .csv", type=["csv"])
 if uploaded_file is not None:
-    input_df = pd.read_csv(uploaded_file)
+    input_df = pd.read_csv(uploaded_file, sep=";")
 
 else:
     def user_input_features():
