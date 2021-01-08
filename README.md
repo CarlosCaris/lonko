@@ -9,6 +9,8 @@ Funciona como un recomendador inteligente para la selección de residuos agroind
 
 1.- Instalar las depencias incluidas en el archivo Requiriments.txt 
 
+### pip3 install -r requirements.txt
+
 2.- Para correr la aplicación, en la linea de comandos (CMD en windows o Terminal) ejecutar la siguiente linea: 
 
 ### streamlit run lonko_webapp.py
