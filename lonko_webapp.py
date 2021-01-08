@@ -61,7 +61,7 @@ else:
 
 # Una vez que se tiene la data leida, se importa la data original, con la que se entrenó el modelo
 # esta data solo se usa para la codificación
-hackathon_raw = pd.read_csv('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/data_hackathon.csv', sep=";")
+hackathon_raw = pd.read_csv('data_hackathon_v4.csv', sep=";")
 # elimino la columna target
 hackathon_raw = hackathon_raw.drop(['cantidad_semillas','cantidad_hollejo','humedad_orujo','polifenoles_totales','taninos','flavanoles','acidos_fenolicos'], axis=1)
 hackathon_raw = hackathon_raw.set_index('sample_id')
@@ -87,19 +87,19 @@ else:
 
 ## Ahora vienen las predicciones, vamos a cargar los modelos entrenados
 # Modelo cantidad de semillas
-load_cantidad_semillas = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_semillas.pkl','rb'))
+load_cantidad_semillas = pickle.load(open('model_semillas.pkl','rb'))
 # Modelo cantidad cantidad_hollejo
-load_cantidad_hollejo = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_hollejo.pkl','rb'))
+load_cantidad_hollejo = pickle.load(open('model_hollejo.pkl','rb'))
 # Modelo humedad horujo
-load_humedad_horujo = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_humedad_orujo.pkl','rb'))
+load_humedad_horujo = pickle.load(open('model_humedad_orujo.pkl','rb'))
 # Modelo polifenoles totales
-load_polifenoles_totales = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_polifenoles_totales.pkl','rb'))
+load_polifenoles_totales = pickle.load(open('model_polifenoles_totales.pkl','rb'))
 # Modelo taninos
-load_taninos = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_taninos.pkl','rb'))
+load_taninos = pickle.load(open('model_taninos.pkl','rb'))
 # Modelo flavanoles
-load_flavanoles = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_flavanoles.pkl','rb'))
+load_flavanoles = pickle.load(open('model_flavanoles.pkl','rb'))
 # Modelo acidos acidos_fenolicos
-load_acidos_fenolicos = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_acidos_fenolicos.pkl','rb'))
+load_acidos_fenolicos = pickle.load(open('model_acidos_fenolicos.pkl','rb'))
 
 ## Aplicamos el modelo para hacer predicciones
 # Predicción de cantidad de semillas
