@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import pickle
 import datetime
+from Proceso_Global import Proceso_Global
 now = datetime.datetime.now()
 
 #----------------------------#
@@ -21,50 +22,51 @@ Software/herramienta digital para la simulación, modelación y optimización de
 st.sidebar.header('Ingreso del input por el usuario')
 
 st.sidebar.markdown("""
-[Example CSV input file](https://raw.githubusercontent.com/CarlosCaris/lonko/blob/main/data_hackathon_sample.csv)
+[Example CSV input file]('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/data_hackathon_sample.csv')
 """)
 ## Para ingresar los datos al la plataforma
 # Esta función permite subir un archivo o permite que el usuario las agregue datos manualmente
-uploaded_file = st.sidebar.file_uploader("Subir archivo .csv", type=["csv"])
+uploaded_file = st.sidebar.file_uploader("Subir archivo con datos de campo y proceso de vinificación .csv", type=["csv"])
 if uploaded_file is not None:
-    input_df = pd.read_csv(uploaded_file, sep=";")
-
+    input_df_prediccion = pd.read_csv(uploaded_file)
 else:
-    def user_input_features():
-        variedad = st.sidebar.selectbox('Variedad',('Cabernet Sauvignon','Cinsault','Merlot','Carmenere','Pinot Noir','Syrah','Malbec')) # Variedades disponibles para utilizar
-        valle = st.sidebar.selectbox('Valle',('Maipo alto','Maule','Itata','Colchagua','Casablanca','Cachapoal','Maipo')) # valles disponebles para utilizar
-        sistema_conduccion = st.sidebar.selectbox('Sistema de conducción', ('espaldera (1x3)','espaldera (1x2)','Parron (3x3)'))
-        rendimiento = st.sidebar.slider('Rendimiento (ton/ha)', 8,22,10)
-        riego = st.sidebar.number_input('Riego (mm3/ha)', 10)
-        DGA = st.sidebar.slider('Grados día acumulados en cosecha(°C)', 1000,1700,1300)
-        plantacion = st.sidebar.slider('Año de plantacion', 1990,2015,2000)
-        cosecha = st.sidebar.slider('°Brix en cosecha', 19,26,20)
-        nitrogeno = st.sidebar.slider('Unidades de nitrogeno totales aplicadas ', 3,55,25)
-        maceracion = st.sidebar.slider('Días de maceración ', 3,30,20)
-        temperatura_maceracion = st.sidebar.slider('Temperatura de maceración (°C)', 3,30,25)
+    input_df_prediccion = pd.read_csv('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/data_hackathon_sample.csv',sep=";")
+    input_df_prediccion = input_df_prediccion.drop(['cantidad_semillas','cantidad_hollejo','humedad_orujo','polifenoles_totales','taninos','flavanoles','acidos_fenolicos'], axis=1)
+    input_df_prediccion = input_df_prediccion.set_index('sample_id')
 
-        data = {'variedad': variedad,
-                'valle': valle,
-                'sistema_conduccion': sistema_conduccion,
-                'rendimiento': rendimiento,
-                'riego': riego,
-                'DGA': DGA,
-                'plantacion':plantacion,
-                'cosecha': cosecha,
-                'nitrogeno': nitrogeno,
-                'maceracion': maceracion,
-                'temperatura_maceracion': temperatura_maceracion}
-        features = pd.DataFrame(data, index=[0])
-        return features
-    input_df = user_input_features()
+def user_input_features():
+    # Proceso de secado
+    masa = st.sidebar.slider('Masa(kg)',0,1000,500) # Masa en kilogramos
+    # Hmedad inicial - Predicho
+    T_sec = st.sidebar.slider('Temperatura de secado(K°)',60,85,75) # valles disponebles para utilizar
+    #PTOS polifenoles totales de orujo seco (%) - Predicho
+    # PPFS porcentaje peso PT en semillas (%) - Predicho
+    # Proceso de extraccion
+    te = st.sidebar.slider('Tiempo de extracción(min)', 10,240,120)
+    temp_e = st.sidebar.slider('Temperatura de extracción(C°)', 40,100,75)
+    ID_sol = st.sidebar.slider('Tipo de solvente utilizado\n [1]Etanol-Agua pH 2.0, 50% w/w [2]Etanol-Agua 50% w/w',1,2,1)
+    ID_procesos = st.sidebar.slider('Tipo de solvente utilizado\n Pressurized Liquid Extracion (PLE)',0,1,1)
+    # PP_Tan Porcentaje de los polifenoles totales asociados a taninos (%) - Predicho
+    # PP_AF  : Porcentaje de los polifenoles totales asociados a acidos-fenolicos (%) - Predicho
+    # PP_FLA : Porcentaje de los polifenoles totales asociados a flavanoides (%) - Predicho
+
+    data = {'masa': masa,
+            'T_sec': T_sec,
+            'te': te,
+            'temp_e': temp_e,
+            'ID_sol': ID_sol,
+            'ID_procesos':ID_procesos}
+    features = pd.DataFrame(data, index=[0])
+    return features
+input_df = user_input_features()
 
 # Una vez que se tiene la data leida, se importa la data original, con la que se entrenó el modelo
 # esta data solo se usa para la codificación
-hackathon_raw = pd.read_csv('data_hackathon_v4.csv', sep=";")
+hackathon_raw = pd.read_csv('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/data_hackathon_v4.csv', sep=";")
 # elimino la columna target
 hackathon_raw = hackathon_raw.drop(['cantidad_semillas','cantidad_hollejo','humedad_orujo','polifenoles_totales','taninos','flavanoles','acidos_fenolicos'], axis=1)
 hackathon_raw = hackathon_raw.set_index('sample_id')
-df = pd.concat([input_df,hackathon_raw])
+df = pd.concat([input_df_prediccion,hackathon_raw])
 df[['plantacion']] = now.year - df[['plantacion']]
 # Ahora hay que hacer la codificación de la nueva instancia que se agregó
 encode = ['variedad','valle','sistema_conduccion']
@@ -86,41 +88,35 @@ else:
 
 ## Ahora vienen las predicciones, vamos a cargar los modelos entrenados
 # Modelo cantidad de semillas
-load_cantidad_semillas = pickle.load(open('model_semillas.pkl','rb'))
+load_cantidad_semillas = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_semillas.pkl','rb'))
 # Modelo cantidad cantidad_hollejo
-load_cantidad_hollejo = pickle.load(open('model_hollejo.pkl','rb'))
+load_cantidad_hollejo = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_hollejo.pkl','rb'))
 # Modelo humedad horujo
-load_humedad_horujo = pickle.load(open('model_humedad_orujo.pkl','rb'))
+load_humedad_horujo = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_humedad_orujo.pkl','rb'))
 # Modelo polifenoles totales
-load_polifenoles_totales = pickle.load(open('model_polifenoles_totales.pkl','rb'))
+load_polifenoles_totales = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_polifenoles_totales.pkl','rb'))
 # Modelo taninos
-load_taninos = pickle.load(open('model_taninos.pkl','rb'))
+load_taninos = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_taninos.pkl','rb'))
 # Modelo flavanoles
-load_flavanoles = pickle.load(open('model_flavanoles.pkl','rb'))
+load_flavanoles = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_flavanoles.pkl','rb'))
 # Modelo acidos acidos_fenolicos
-load_acidos_fenolicos = pickle.load(open('model_acidos_fenolicos.pkl','rb'))
+load_acidos_fenolicos = pickle.load(open('C:/Users/carlo/OneDrive/Documentos/DataScience/portafolio/Hackathon/Fitted_models/model_acidos_fenolicos.pkl','rb'))
 
 ## Aplicamos el modelo para hacer predicciones
 # Predicción de cantidad de semillas
 prediction_semillas = load_cantidad_semillas.predict(df)
-prediction_semillas = prediction_semillas*100
 # Predicción de cantidad de hollejo
 prediction_hollejo = load_cantidad_hollejo.predict(df)
-prediction_hollejo = prediction_hollejo*100
 # Predicción hotujo
-prediction_humedad = 100-(prediction_semillas+prediction_hollejo)
+prediction_humedad = 1-(prediction_semillas+prediction_hollejo)
 # Predicción polifenoles totales
 prediction_polifenoles_totales = load_polifenoles_totales.predict(df)
-prediction_polifenoles_totales = prediction_polifenoles_totales*100
 # Predicción taninos
 prediction_taninos = load_polifenoles_totales.predict(df)
-prediction_taninos = prediction_taninos*100
 # Predicción flavanoles
 prediction_flavanoles = load_flavanoles.predict(df)
-prediction_flavanoles = prediction_flavanoles*100
 # Predicción acidos fenolicos
 prediction_acidos_fenolicos = load_acidos_fenolicos.predict(df)
-prediction_acidos_fenolicos = prediction_acidos_fenolicos*100
 
 # Crear data fram con las predicciones
 df_predicciones = pd.DataFrame({'Cantidad_semillas': prediction_semillas,
@@ -130,11 +126,47 @@ df_predicciones = pd.DataFrame({'Cantidad_semillas': prediction_semillas,
                                 'taninos': prediction_taninos,
                                 'flavanoles': prediction_flavanoles ,
                                 'acidos fenolicos': prediction_acidos_fenolicos})
-# Se transponen las predicciones para gráficar
-#df_predicciones_T = df_predicciones.T
+array_predicciones = df_predicciones.to_numpy()
+array_input = input_df.to_numpy()
+# Guardar los datos de entrada del proceso Proceso_Global
+Masa_0 = array_input[0,0]
+Hum_0 = array_predicciones[0,2]
+T_Sec = array_input[0,1]+273
+PTOS = array_predicciones[0,3]
+PPFS = array_predicciones[0,0]*array_predicciones[0,3]
+te = array_input[0,2]
+Temp_e = array_input[0,3]
+ID_Sol = array_input[0,4]
+ID_Proceso = array_input[0,5]
+PP_Tan = array_predicciones[0,4]
+PP_AF = array_predicciones[0,6]
+PP_FLA = array_predicciones[0,5]
+
+
+# Se aplica la función de proceso global que nos permite simular el proceso y los resultados
+retenciones = Proceso_Global(Masa_0,Hum_0,T_Sec,PTOS,PPFS,te,Temp_e,ID_Sol,ID_Proceso,PP_Tan,PP_AF,PP_FLA)
+df_retenciones = pd.DataFrame(retenciones)
+
+## Calculo de indicadores de desempeño
+# Rendimiento
+rendimiento_extraccion = df_retenciones[3:4:].to_numpy()/Masa_0
+# Productividad
+productividad = Masa_0/te+df_retenciones[2:3:].to_numpy()
+# Eficiencia
+eficiencia  = df_retenciones[0:1:].to_numpy()*df_retenciones[2:3:].to_numpy()*100
+# Caracteristicas del producto
+caracteristicas_producto = df_predicciones[['taninos','flavanoles','acidos fenolicos']]
+
 
 st.subheader('Predicción')
 st.write(df_predicciones)
 
+st.subheader('Input Usuario')
+st.write(input_df)
+
+st.subheader('Resultado proceso global')
+st.write(df_retenciones)
+
 st.subheader('Plot')
-st.bar_chart(df_predicciones.T)
+st.bar_chart(caracteristicas_producto.T)
+
