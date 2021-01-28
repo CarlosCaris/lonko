@@ -11,7 +11,7 @@ Se requiere la instalación una instalación de Python 3.6 o mayor
 
 1.- Instalar las depencias incluidas en el archivo Requiriments.txt 
 
-### pip3 install -r requirements.txt
+### pip install -r requirements.txt
 
 2.- Para correr la aplicación, en la linea de comandos (CMD en windows o Terminal) ejecutar la siguiente linea: 
 
